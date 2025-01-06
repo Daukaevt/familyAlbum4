@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Collage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            overflow: hidden; /* Чтобы предотвратить прокрутку при открытом изображении */
+        }
+        .photo-list {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            max-width: 90%;
+            margin: 20px;
+            max-height: 80vh; /* Ограничиваем высоту коллажа */
+            overflow-y: auto; /* Добавляем вертикальный скроллинг */
+        }
+        .photo-list img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        .photo-list img:hover {
+            transform: scale(1.05);
+        }
+        .photo-list .tall {
+            grid-row: span 2;
+        }
+        .photo-list .large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+        .photo-list .wide {
+            grid-column: span 2;
+        }
+        
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Модальное окно поверх остальных элементов */
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            cursor: pointer; /* Курсор как указатель при клике на изображение */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="photo-list">
+        <div class="tall"><img src="https://iili.io/2MqE8Is.png" alt="Photo 1" onclick="selectImage('https://iili.io/2MqE8Is.png')"></div>
+        <div><img src="https://iili.io/2MqErB4.png" alt="Photo 2" onclick="selectImage('https://iili.io/2MqErB4.png')"></div>
+        <div class="tall"><img src="https://iili.io/2MqE4El.png" alt="Photo 3" onclick="selectImage('https://iili.io/2MqE4El.png')"></div>
+        <div class="large"><img src="https://iili.io/2MqE642.png" alt="Photo 4" onclick="selectImage('https://iili.io/2MqE642.png')"></div>
+        <div><img src="https://iili.io/2MqELv9.png" alt="Photo 5" onclick="selectImage('https://iili.io/2MqELv9.png')"></div>
+        <div class="wide"><img src="https://iili.io/2Mqy3B9.jpg" alt="Photo 6" onclick="selectImage('https://iili.io/2Mqy3B9.jpg')"></div>
+        <div><img src="https://iili.io/2MBJCkG.jpg" alt="Photo 7" onclick="selectImage('https://iili.io/2MBJCkG.jpg')"></div>
+        <div class="tall"><img src="https://iili.io/2MBJjYg.png" alt="Photo 8" onclick="selectImage('https://iili.io/2MBJjYg.png')"></div>
+        <div><img src="https://iili.io/2MBJUGI.jpg" alt="Photo 9" onclick="selectImage('https://iili.io/2MBJUGI.jpg')"></div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div class="modal" id="modal">
+        <img id="modalImage" src="" alt="Full Image" onclick="toggleModal()">
+    </div>
+
+    <script>
+        let modal = document.getElementById('modal');
+        let modalImage = document.getElementById('modalImage');
+
+        // Функция для открытия изображения в полный экран
+        function selectImage(imageUrl) {
+            modal.style.display = "flex"; // Открыть модальное окно
+            modalImage.src = imageUrl; // Установить изображение в модальном окне
+        }
+
+        // Функция для закрытия модального окна при повторном клике на изображение
+        function toggleModal() {
+            modal.style.display = "none"; // Закрыть модальное окно
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+<!--  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Collage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            overflow: hidden; /* Чтобы предотвратить прокрутку при открытом изображении */
+        }
+        .photo-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 80%;
+            margin: 20px;
+            max-height: 80vh; /* Ограничим высоту коллажа */
+            overflow-y: auto; /* Добавляем вертикальный скроллинг */
+        }
+        .photo-list img {
+            width: 80%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .photo-list img:hover {
+            transform: scale(1.05);
+        }
+        .photo-list .tall {
+            grid-row: span 2;
+        }
+        .photo-list .large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+        .photo-list .wide {
+            grid-column: span 2;
+        }
+        
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="photo-list">
+        <div class="tall"><img src="https://iili.io/2MqE8Is.png" alt="Photo 1" onclick="selectImage('https://iili.io/2MqE8Is.png')"></div>
+        <div><img src="https://iili.io/2MqErB4.png" alt="Photo 2" onclick="selectImage('https://iili.io/2MqErB4.png')"></div>
+        <div class="tall"><img src="https://iili.io/2MqE4El.png" alt="Photo 3" onclick="selectImage('https://iili.io/2MqE4El.png')"></div>
+        <div class="large"><img src="https://iili.io/2MqE642.png" alt="Photo 4" onclick="selectImage('https://iili.io/2MqE642.png')"></div>
+        <div><img src="https://iili.io/2MqELv9.png" alt="Photo 5" onclick="selectImage('https://iili.io/2MqELv9.png')"></div>
+        <div class="wide"><img src="https://iili.io/2Mqy3B9.jpg" alt="Photo 6" onclick="selectImage('https://iili.io/2Mqy3B9.jpg')"></div>
+        <div><img src="https://iili.io/2MBJCkG.jpg" alt="Photo 7" onclick="selectImage('https://iili.io/2MBJCkG.jpg')"></div>
+        <div class="tall"><img src="https://iili.io/2MBJjYg.png" alt="Photo 8" onclick="selectImage('https://iili.io/2MBJjYg.png')"></div>
+        <div><img src="https://iili.io/2MBJUGI.jpg" alt="Photo 9" onclick="selectImage('https://iili.io/2MBJUGI.jpg')"></div>
+    </div>
+
+    <!-- Модальное окно 
+    <div class="modal" id="modal">
+        <img id="modalImage" src="" alt="Full Image">
+    </div>
+
+    <script>
+        let modal = document.getElementById('modal');
+        let modalImage = document.getElementById('modalImage');
+
+        // Функция для открытия изображения в полный экран
+        function selectImage(imageUrl) {
+            if (modal.style.display === "flex") {
+                // Если модальное окно уже открыто, закрыть его
+                modal.style.display = "none";
+            } else {
+                // Открыть модальное окно и отобразить изображение
+                modal.style.display = "flex";
+                modalImage.src = imageUrl;
+            }
+        }
+
+        // Закрытие модального окна при клике на само окно
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+<!-- 
+
+
+
+
+
+
+<div class="collage-container">
+    <div class="tall"><img src="https://iili.io/2MqE8Is.png" alt="Photo 1" onclick="selectImage(this)"></div>
+    <div><img src="https://iili.io/2MqErB4.png" alt="Photo 2" onclick="selectImage(this)"></div>
+    <div class="tall"><img src="https://iili.io/2MqE4El.png" alt="Photo 3" onclick="selectImage(this)"></div>
+    <div class="large"><img src="https://iili.io/2MqE642.png" alt="Photo 4" onclick="selectImage(this)"></div>
+    <div><img src="https://iili.io/2MqELv9.png" alt="Photo 5" onclick="selectImage(this)"></div>
+    <div class="wide"><img src="https://iili.io/2Mqy3B9.jpg" alt="Photo 6" onclick="selectImage(this)"></div>
+    <div><img src="https://iili.io/2MBJCkG.jpg" alt="Photo 7" onclick="selectImage(this)"></div>
+    <div class="tall"><img src="https://iili.io/2MBJjYg.png" alt="Photo 8" onclick="selectImage(this)"></div>
+    <div><img src="https://iili.io/2MBJUGI.jpg" alt="Photo 9" onclick="selectImage(this)"></div>
+</div>
+
+-->

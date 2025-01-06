@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family album</title>
+<style>
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f2f2f2;
+	margin: 0;
+	padding: 0;
+}
+
+header {
+	background-color: #4CAF50;
+	color: white;
+	text-align: center;
+	padding: 10px;
+}
+
+nav {
+	margin: 10px 0;
+	text-align: center;
+}
+
+nav a {
+	margin: 0 15px;
+	text-decoration: none;
+	color: #4CAF50;
+	font-size: 18px;
+}
+
+nav a:hover {
+	color: #333;
+}
+p {
+  background-image: url('https://img.freepik.com/premium-vector/creative-colorful-education-illustration-with-books-school-supplies_1300528-9228.jpg?w=740');
+}
+
+.gallery-container {
+	max-width: 1000px;
+	margin: 20px auto;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 10px;
+}
+
+.gallery-container img {
+	width: 100%;
+	height: auto;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.menu-title {
+	margin-top: 20px;
+	font-size: 24px;
+	text-align: center;
+	color: #333;
+}
+
+footer {
+	margin-top: 20px;
+	text-align: center;
+	padding: 10px;
+	background-color: #4CAF50;
+	color: white;
+}
+
+.carousel {
+	max-width: 600px;
+	margin: 0 auto;
+	overflow: hidden;
+	position: relative;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	background-color: #f0f0f0;
+}
+
+.carousel-inner {
+	display: flex;
+	transition: transform 0.5s ease-in-out;
+}
+
+.carousel-inner img {
+	object-fit: scale-down;
+	width: 100%;
+	height: auto;
+}
+
+.carousel-controls {
+	position: absolute;
+	top: 50%;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	transform: translateY(-50%);
+}
+
+.carousel-controls button {
+	background-color: rgba(0, 0, 0, 0.5);
+	border: none;
+	color: white;
+	padding: 10px;
+	cursor: pointer;
+}
+
+.carousel-controls button:hover {
+	background-color: rgba(0, 0, 0, 0.8);
+}
+</style>
+</head>
+<body>
+
+	<header>
+		<h1>Family album</h1>
+	</header>
+
+	<nav>
+		<a href="#login">Log out/Sign in</a> <a href="#gallery">Gallery</a> <a
+			href="#random">Random photos</a> <a
+			th:href="@{/album/create_new_gallery}">Create new gallery</a>
+	</nav>
+
+	<section id="gallery">
+		<div class="menu-title">Gallery</div>
+		<div class="gallery-container">
+			<a th:href="@{/mom}" target="_blank"> <img
+				src="https://www.shutterstock.com/shutterstock/photos/685285048/display_1500/stock-vector-super-mama-super-mom-spanish-text-mother-celebration-vector-illustration-685285048.jpg"
+				alt="Photo 1" title="All together."></a>
+			<a th:href="@{/all-together}" target="_blank"> <img
+				src="https://img.freepik.com/free-vector/family-set_1308-6698.jpg?t=st=1723973533~exp=1723977133~hmac=a05597df792748f16d764c6a8d414828a59f9fd4653d9b0600887be3d2c4f648&w=740"
+				alt="Photo 1" title="All together."></a>
+			<a th:href="@{/our-celebrations}" target="_blank"> <img
+				src="https://img.freepik.com/premium-photo/table-laid-festive-dinner-food-dishes-drinks-chairs-vector-family-dining-room-kitchen-restaurant-laid-table-with-party-celebration-lunch-breakfast-brunch-meals_1028938-246797.jpg?w=740"
+				alt="Photo 2" title="Our celebrations."></a>
+			<a th:href="@{/our-trips}" target="_blank"> <img
+				src="https://img.freepik.com/free-vector/family-tourists-traveling-airplane-together_3446-671.jpg?t=st=1723974264~exp=1723977864~hmac=e70ea724b6f8933df57f74a69e98dac73d7ef171eaa9f812bc2c70d488d9017e&w=740"
+				alt="Photo 3" title="Our trips"></a>
+			<a th:href="@{/outdoor-recreation}" target="_blank"> <img
+				src="https://img.freepik.com/premium-photo/seamless-cartoon-nature-landscape-unending-background_1029622-86555.jpg?w=740"
+				alt="Photo 4" title="Outdoor recreation."></a>
+			<a th:href="@{/old-photos}" target="_blank"> <img
+				src="https://img.freepik.com/free-vector/scrapbooking-vintage-set_1284-5355.jpg?t=st=1723973820~exp=1723977420~hmac=61c4f029d82bdec2e09fbd1e272be769da3dba2dee68c4b2da8bf7cb08389856&w=740"
+				alt="Photo 5" title="Old photos."></a>
+		</div>
+	</section>
+
+	<section id="random">
+		<div class="menu-title">Random photos</div>
+		<div class="carousel">
+			<div class="carousel-inner">
+				<img src="https://iili.io/dlUtcVS.jpg" alt="photo 1"> <img
+					src="https://iili.io/dVsGp8F.jpg" alt="photo 2"> <img
+					src="https://iili.io/dVsNLrv.jpg" alt="photo 3">
+			</div>
+			<div class="carousel-controls">
+				<button id="prevBtn">&#10094;</button>
+				<button id="nextBtn">&#10095;</button>
+			</div>
+		</div>
+	</section>
+
+	<footer> © 2024 Family album </footer>
+
+	<script>
+    const carouselInner = document.querySelector('.carousel-inner');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    let index = 0;
+
+    function showSlide(i) {
+        index += i;
+        if (index < 0) {
+            index = carouselInner.children.length - 1;
+        } else if (index >= carouselInner.children.length) {
+            index = 0;
+        }
+        carouselInner.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    prevBtn.addEventListener('click', () => showSlide(-1));
+    nextBtn.addEventListener('click', () => showSlide(1));
+</script>
+
+</body>
+</html>

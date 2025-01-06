@@ -24,6 +24,22 @@ public class PhotoController {
 	public String getIndex() {
 		return "index";
 	}
+	@GetMapping("/album")
+	public String getAlbum() {
+		return "album";
+	}
+	@GetMapping("/all-together")
+	public String getAllTogether() {
+		return "all_together";
+	}
+	@GetMapping("/all-together1")
+	public String getAllTogether1() {
+		return "all_together1";
+	}
+	@GetMapping("/mom")
+	public String getMomsPage() {
+		return "mom";
+	}
 	@GetMapping("/secured")
 	public String getSecured() {
 		return "secured";

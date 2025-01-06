@@ -1,10 +1,243 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Collage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #f4f4f4;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 30%;
+            background: #e0e0e0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar img {
+            width: 80%;
+            height: auto;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .sidebar img:hover {
+            transform: scale(1.05);
+        }
+        .main-content {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            background: white;
+            padding: 10px;
+            position: relative;
+        }
+        .toolbar {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px;
+            background-color: #f4f4f4;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .toolbar button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-add {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-edit {
+            background-color: #ffc107;
+            color: black;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+        .main-image {
+            max-width: 90%;
+            max-height: 80%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .description {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease;
+        }
+        .overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+        .overlay.show {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
-Hello from index!
+    <!-- Левая часть: список миниатюр -->
+    <div class="sidebar">
+        <img th:each="photo : ${photos}"
+             th:src="${photo.url}"
+             th:alt="${photo.description}"
+             th:data-id="${photo.id}"
+             th:data-url="${photo.url}"
+             th:data-description="${photo.description}"
+             onclick="selectImage(this)">
+    </div>
+
+    <!-- Правая часть -->
+    <div class="main-content">
+        <!-- Тулбар с кнопками -->
+        <div class="toolbar">
+            <button class="btn-add" onclick="addNewPhoto()">Add</button>
+            <button class="btn-edit" onclick="editPhoto()">Edit</button>
+            <button class="btn-delete" onclick="deletePhoto()">Delete</button>
+        </div>
+        <!-- Основное изображение -->
+        <img id="mainImage" class="main-image" src="" alt="Preview" onclick="toggleOverlay()">
+        <div id="description" class="description"></div>
+    </div>
+
+    <!-- Оверлей для полноразмерного изображения -->
+    <div id="overlay" class="overlay" onclick="toggleOverlay()">
+        <img id="overlayImage" src="" alt="Full Size">
+    </div>
+
+    <script>
+        let selectedPhotoId = null;
+
+        // Функция для выбора изображения
+        function selectImage(imageElement) {
+            const mainImage = document.getElementById('mainImage');
+            const descriptionElement = document.getElementById('description');
+
+            // Получаем данные из атрибутов data-
+            const imageUrl = imageElement.getAttribute('data-url');
+            const imageDescription = imageElement.getAttribute('data-description');
+            selectedPhotoId = imageElement.getAttribute('data-id');
+
+            // Обновляем правую часть
+            mainImage.src = imageUrl;
+            descriptionElement.textContent = imageDescription;
+        }
+
+        // Функция для переключения оверлея
+        function toggleOverlay() {
+            const overlay = document.getElementById('overlay');
+            const overlayImage = document.getElementById('overlayImage');
+            const mainImage = document.getElementById('mainImage');
+
+            if (!overlay.classList.contains('show')) {
+                overlayImage.src = mainImage.src;
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        // AJAX-запрос для добавления новой фотографии
+        function addNewPhoto() {
+            const description = prompt("Enter a description for the new photo:");
+            const url = prompt("Enter the URL for the new photo:");
+
+            if (description && url) {
+                fetch('/photos/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `description=${encodeURIComponent(description)}&url=${encodeURIComponent(url)}`
+                })
+                .then(response => response.text())
+                .then(result => {
+                    alert(result);
+                    location.reload(); // Перезагрузка страницы
+                });
+            }
+        }
+
+        // AJAX-запрос для редактирования фотографии
+        function editPhoto() {
+            if (!selectedPhotoId) {
+                alert("Please select a photo to edit.");
+                return;
+            }
+
+            const description = prompt("Enter a new description for the photo:");
+            const url = prompt("Enter a new URL for the photo:");
+
+            if (description && url) {
+                fetch(`/photos/edit/${selectedPhotoId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `description=${encodeURIComponent(description)}&url=${encodeURIComponent(url)}`
+                })
+                .then(response => response.text())
+                .then(result => {
+                    alert(result);
+                    location.reload(); // Перезагрузка страницы
+                });
+            }
+        }
+
+        // AJAX-запрос для удаления фотографии
+        function deletePhoto() {
+            if (!selectedPhotoId) {
+                alert("Please select a photo to delete.");
+                return;
+            }
+
+            const confirmDelete = confirm("Are you sure you want to delete this photo?");
+            if (confirmDelete) {
+                fetch(`/photos/delete/${selectedPhotoId}`, {
+                    method: 'POST'
+                })
+                .then(response => response.text())
+                .then(result => {
+                    alert(result);
+                    location.reload(); // Перезагрузка страницы
+                });
+            }
+        }
+    </script>
 </body>
 </html>
