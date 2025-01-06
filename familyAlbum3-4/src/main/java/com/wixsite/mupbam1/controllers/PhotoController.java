@@ -7,21 +7,24 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.wixsite.mupbam1.models.Pics;
 import com.wixsite.mupbam1.repository.PhotoRepository;
+import com.wixsite.mupbam1.services.PhotoService;
 import com.wixsite.mupbam1.utils.HibernateUtil;
 
 @Controller
 public class PhotoController {
 	@Autowired
-	private PhotoRepository photoRepository;
+	private PhotoService photoService;
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	
 	@GetMapping("/")
-	public String getIndex() {
+	public String getIndex(Model model) {
+		model.addAttribute("photos", photoService.getAllPhotos());
 		return "index";
 	}
 	@GetMapping("/album")
@@ -51,7 +54,7 @@ public class PhotoController {
         newPhoto.setUrl("testUrl");
         
         try {
-        	Optional<Pics> pic = photoRepository.findById(10000000000L);
+        	Pics pic = photoService.getPhotoById(10000000000L);
             System.out.println(pic.toString());
 			Session session = sessionFactory.getCurrentSession();
 			session.beginTransaction();
