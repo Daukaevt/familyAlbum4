@@ -1,7 +1,5 @@
 package com.wixsite.mupbam1.controllers;
 
-import java.util.Optional;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.wixsite.mupbam1.models.Pics;
-import com.wixsite.mupbam1.repository.PhotoRepository;
 import com.wixsite.mupbam1.services.PhotoService;
 import com.wixsite.mupbam1.utils.HibernateUtil;
 
