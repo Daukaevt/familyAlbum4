@@ -15,12 +15,12 @@ public class PhotoService {
     @Autowired
     private PhotoRepository photoRepository;
 
-    // Создание нового пользователя
+    // Создание нового фото
     public Pics savePhoto(Pics pic) {
         return photoRepository.save(pic);
     }
 
-    // Получение всех пользователей
+    // Получение всех фото
     public List<Pics> getAllPhotos() {
         return photoRepository.findAll();
     }
@@ -35,8 +35,7 @@ public class PhotoService {
     public boolean googleUser(OAuth2User oauth2User) {
     	return oauth2User.getAttribute("sub") != null;
     }
-
-    // Удаление пользователя
+    // Удаление фото
     public void deleteUser(Long id) {
         photoRepository.deleteById(id);
     }
