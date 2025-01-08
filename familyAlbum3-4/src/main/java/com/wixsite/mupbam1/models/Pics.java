@@ -18,8 +18,9 @@ public class Pics {
 	private long id;
 	private String description;
 	private String url;
+	private String owner_key;
 	
-	public Pics(String description, String url) {
+	public Pics(String description, String url, String owner_key) {
 		super();
 		this.description = description;
 		this.url = url;

@@ -78,17 +78,19 @@ public class PhotoController {
 		return "secured";
 	}
 	@GetMapping("/save")
-	public String savePhoto() {
+	public String savePhoto(Authentication authentication, Model model) {
 		Pics newPhoto = new Pics();
+		if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
         newPhoto.setDescription("testDescription");
         newPhoto.setUrl("testUrl");
+        newPhoto.setOwner_key(photoService.getOwnerKey(oauth2User));
         
         try {
-        	Pics pic = photoService.getPhotoById(10000000000L);
+        	Pics pic = photoService.getPhotoById(10000001L);
             System.out.println(pic.toString());
 			Session session = sessionFactory.getCurrentSession();
 			session.beginTransaction();
-			//session.persist(newPhoto);
+			session.persist(newPhoto);
 			session.getTransaction().commit();
 		} catch (HibernateException e) {
 			e.printStackTrace();
@@ -96,7 +98,7 @@ public class PhotoController {
         
         System.out.println(newPhoto.toString());
         
-        
+		}
         
         return "saved";
 	}
