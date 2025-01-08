@@ -17,6 +17,7 @@ import com.wixsite.mupbam1.utils.HibernateUtil;
 public class PhotoController {
 	@Autowired
 	private PhotoService photoService;
+	//private OAuth2UserUtil oauth2User;
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	
@@ -28,6 +29,13 @@ public class PhotoController {
 	@GetMapping("/album")
 	public String getAlbum() {
 		return "album";
+	}
+	@GetMapping("/test-album")
+	public String getTestAlbum(Authentication authentication, Model model) {
+		if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
+		model.addAttribute("userId", photoService.getOwnerKey(oauth2User));
+		}
+		return "test_album";
 	}
 	@GetMapping("/all-together")
 	public String getAllTogether() {

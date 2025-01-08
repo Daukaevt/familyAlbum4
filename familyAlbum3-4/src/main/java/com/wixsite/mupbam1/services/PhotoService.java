@@ -1,6 +1,7 @@
 package com.wixsite.mupbam1.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -52,5 +53,11 @@ public class PhotoService {
         }
 		return uniqueUser;
 	}
+	/*
+	public OAuth2User oauth2User (Authentication authentication) {
+		return (authentication.getPrincipal() instanceof OAuth2User oauth2User) ?  oauth2User : null;
+		
+	}
+	*/
 }
 

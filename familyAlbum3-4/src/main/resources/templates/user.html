@@ -1,23 +1,133 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Info Page</title>
+    <style>
+        :root {
+            --background-light: #ffffff;
+            --background-dark: #1e1e1e;
+            --text-light: #000000;
+            --text-dark: #ffffff;
+            --card-light: #f4f4f4;
+            --card-dark: #2c2c2c;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark-theme {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: var(--card-light);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .dark-theme .card {
+            background-color: var(--card-dark);
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .info {
+            flex: 1;
+        }
+
+        .info h1 {
+            margin: 0 0 10px;
+            font-size: 1.8rem;
+        }
+
+        .info p {
+            margin: 0;
+            font-size: 1rem;
+            color: inherit;
+        }
+
+        .theme-toggle {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .theme-toggle button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .theme-toggle button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-	<div>
-		<p th:text="${sub}"></p>
-		<p th:text="${name}"></p>
-		<p th:text="${given_name}"></p>
-		<p th:text="${family_name}"></p>		
-		<p th:text="${email}"></p>
-		<p th:text="${email_verified}"></p>
-		<p th:text="${locale}"></p>
-		<img alt="" th:src="${picture}">
-		<p th:text="${login}"></p>
-		<p th:text="${id}"></p>
-		<p th:text="${bio}"></p>
-		<img alt="" th:src="${avatar_url}">
-	</div>
+    <div class="container">
+        <div class="card">
+            <img class="profile-image" th:if="${avatar_url != null}" th:src="${avatar_url}" alt="Avatar">
+            <img class="profile-image" th:if="${picture != null}" th:src="${picture}" alt="Picture">
+            <div class="info">
+                <h1 th:text="${name}">John Doe</h1>
+                <p th:text="${sub}"></p>
+                <p th:text="${given_name}"></p>
+                <p th:text="${family_name}"></p>
+                <p th:text="${email}"></p>
+                <p th:text="${email_verified}"></p>
+                <p th:text="${locale}"></p>
+                <p th:text="${login}"></p>
+                <p th:text="${id}"></p>
+                <p th:text="${bio}"></p>
+            </div>
+        </div>
+        <div class="theme-toggle">
+            <button id="themeToggleBtn">Switch to Dark Theme</button>
+        </div>
+    </div>
+
+    <script>
+        const body = document.body;
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+        themeToggleBtn.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+
+            if (body.classList.contains('dark-theme')) {
+                themeToggleBtn.textContent = 'Switch to Light Theme';
+            } else {
+                themeToggleBtn.textContent = 'Switch to Dark Theme';
+            }
+        });
+    </script>
 </body>
 </html>
