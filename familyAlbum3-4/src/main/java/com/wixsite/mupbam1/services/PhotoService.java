@@ -24,6 +24,12 @@ public class PhotoService {
     public List<Pics> getAllPhotos() {
         return photoRepository.findAll();
     }
+    // Получение всех фото
+    public List<Pics> getAlbumByUserKey(String id) {
+      return photoRepository.findAll().stream()
+    		  .filter(s->s.getOwner_key().equals(id))
+    		  .toList();
+    }
 
     // Получение фото по ID
     public Pics getPhotoById(Long id) {

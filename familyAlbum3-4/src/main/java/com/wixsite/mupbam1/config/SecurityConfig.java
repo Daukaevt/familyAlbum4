@@ -15,7 +15,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(auth->{
-			auth.requestMatchers("/").permitAll();
+			auth.requestMatchers("/album").permitAll();
 			auth.anyRequest().authenticated();
 		})
 		.formLogin(withDefaults())

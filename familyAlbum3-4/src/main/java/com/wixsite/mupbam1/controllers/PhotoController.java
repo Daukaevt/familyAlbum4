@@ -9,11 +9,16 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.wixsite.mupbam1.models.Pics;
 import com.wixsite.mupbam1.services.PhotoService;
 import com.wixsite.mupbam1.utils.HibernateUtil;
 
 @Controller
+@RequestMapping("/album")
 public class PhotoController {
 	@Autowired
 	private PhotoService photoService;
@@ -21,33 +26,64 @@ public class PhotoController {
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	
-	@GetMapping("/")
+	@GetMapping("/index")
 	public String getIndex(Model model) {
-		model.addAttribute("photos", photoService.getAllPhotos());
-		return "index";
+		model.addAttribute("photos", photoService.getAllPhotos());		
+		return "album/index";
 	}
-	@GetMapping("/album")
-	public String getAlbum() {
-		return "album";
+	@GetMapping()
+	public String getAlbums() {
+		return "album/album";
 	}
-	@GetMapping("/test-album")
+	@GetMapping("/test2-album")
+	public String getAlbumById(Authentication authentication, Model model) {
+		if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
+			String userId = photoService.getOwnerKey(oauth2User);
+		model.addAttribute("userId", userId);
+		model.addAttribute("photos", photoService.getAlbumByUserKey(userId));
+		}
+		return "album/test2_album";
+	}
+	/*
+	@GetMapping("/test2-album")
 	public String getTestAlbum(Authentication authentication, Model model) {
 		if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
 		model.addAttribute("userId", photoService.getOwnerKey(oauth2User));
+		model.addAttribute("photos", photoService.getAllPhotos());
 		}
-		return "test_album";
+		return "test2_album";
 	}
+	*/
+	@PostMapping("/test2-album")
+    public String addPhoto(@RequestParam("description") String description,
+                           @RequestParam("url") String url,
+                           @RequestParam("ownerKey") String ownerKey,
+                           Model model) {
+        if (url == null || url.isEmpty()) {
+            model.addAttribute("error", "URL изображения обязателен.");
+            return "error"; // Вернуть страницу с ошибкой
+        }
+
+        Pics pic = new Pics();
+        pic.setDescription(description);
+        pic.setUrl(url);
+        pic.setOwner_key(ownerKey);
+
+        photoService.savePhoto(pic);
+        model.addAttribute("message", "Фото успешно добавлено!");
+        return "redirect:/"; // Перенаправление на главную страницу
+    }
 	@GetMapping("/all-together")
 	public String getAllTogether() {
-		return "all_together";
+		return "album/all_together";
 	}
 	@GetMapping("/all-together1")
 	public String getAllTogether1() {
-		return "all_together1";
+		return "album/all_together1";
 	}
 	@GetMapping("/mom")
 	public String getMomsPage() {
-		return "mom";
+		return "album/mom";
 	}
 	@GetMapping("/user-info")
 	public String getUserInfo(Authentication authentication, Model model) {
@@ -79,18 +115,18 @@ public class PhotoController {
 	        	return "/logout";
 	        }
 		
-	    return "user";
+	    return "album/user";
 	}
 	@GetMapping("/secured")
 	public String getSecured() {
-		return "secured";
+		return "album/secured";
 	}
 	@GetMapping("/save")
 	public String savePhoto(Authentication authentication, Model model) {
 		Pics newPhoto = new Pics();
 		if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
-        newPhoto.setDescription("testDescription");
-        newPhoto.setUrl("testUrl");
+        newPhoto.setDescription("в лесу.");
+        newPhoto.setUrl("https://iili.io/2WzifmG.jpg");
         newPhoto.setOwner_key(photoService.getOwnerKey(oauth2User));
         
         try {
@@ -98,7 +134,7 @@ public class PhotoController {
             System.out.println(pic.toString());
 			Session session = sessionFactory.getCurrentSession();
 			session.beginTransaction();
-			session.persist(newPhoto);
+			//session.persist(newPhoto);
 			session.getTransaction().commit();
 		} catch (HibernateException e) {
 			e.printStackTrace();
@@ -108,7 +144,7 @@ public class PhotoController {
         
 		}
         
-        return "saved";
+        return "album/saved";
 	}
 
 
