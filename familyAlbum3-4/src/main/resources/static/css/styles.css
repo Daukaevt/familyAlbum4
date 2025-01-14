@@ -1,0 +1,223 @@
+/* Сетка фотографий */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 равных колонок */
+    gap: 10px; /* Расстояние между плитками */
+    padding: 10px;
+}
+
+/* Базовый стиль плитки */
+.photo-tile {
+    overflow: hidden;
+    position: relative;
+}
+
+/* Альбомное фото */
+.photo-tile.landscape {
+    grid-column: span 2; /* Две колонки */
+    grid-row: span 1; /* Одна строка */
+}
+
+/* Портретное фото */
+.photo-tile.portrait {
+    grid-column: span 1; /* Одна колонка */
+    grid-row: span 2; /* Две строки */
+}
+
+/* Квадратное фото */
+.photo-tile.square {
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+/* Стили для изображений */
+.photo-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.photo-tile:hover img {
+    transform: scale(1.1); /* Увеличение изображения при наведении */
+}
+
+.photo-tile.placeholder {
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 16px;
+    font-weight: bold;
+    aspect-ratio: 3 / 2;
+}
+
+/* Модальное окно */
+.photo-modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); /* Темный фон */
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Содержимое модального окна */
+.modal-content {
+    max-width: 70%; /* Ширина изображения */
+    max-height: 90%; /* Высота изображения */
+    border: 8px solid white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    object-fit: contain; /* Подгонка по размеру */
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Закрывающий крестик */
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+/* Окно описания */
+.photo-description-window {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 30%; /* Ширина окна описания */
+    height: 100%; /* Высота на весь экран */
+    background-color: #1a1a1a; /* Темный фон */
+    color: white; /* Белый текст */
+    padding: 20px 30px; /* Отступы вокруг текста */
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5); /* Тень */
+    z-index: 2001; /* Выше модального окна */
+    overflow-y: auto; /* Скроллинг для длинного текста */
+    box-sizing: border-box;
+    font-family: Arial, sans-serif; /* Читаемый шрифт */
+}
+
+/* Стили текста в описании */
+.photo-description-window h2 {
+    font-size: 1.8rem; /* Увеличенный размер заголовка */
+    margin-bottom: 15px; /* Отступ под заголовком */
+    border-bottom: 2px solid white;
+    padding-bottom: 10px;
+    color: #f8f9fa; /* Чуть более светлый белый */
+}
+
+.photo-description-window p {
+    font-size: 1.4rem; /* Увеличенный размер текста */
+    line-height: 1.8; /* Увеличенный межстрочный интервал */
+    color: #eaeaea; /* Яркий, но не слепящий белый */
+    word-wrap: break-word;
+}
+
+/* Для мобильных устройств: Адаптивность */
+@media (max-width: 768px) {
+    .photo-description-window {
+        width: 100%; /* Описание занимает всю ширину */
+        height: 40%; /* Высота уменьшена */
+        top: auto; /* Снизу */
+        bottom: 0;
+    }
+
+    .photo-description-window h2 {
+        font-size: 1.6rem; /* Чуть меньше заголовок */
+    }
+
+    .photo-description-window p {
+        font-size: 1.2rem; /* Чуть меньше текст */
+    }
+}
+
+
+
+/* Анимация увеличения фото */
+.photo-modal.show .modal-content {
+    transform: scale(1.5); /* Легкое увеличение */
+}
+
+
+
+
+
+/* Toolbar */
+.toolbar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.toolbar form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.toolbar input {
+    padding: 5px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.toolbar button {
+    padding: 5px 10px;
+    font-size: 1rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.toolbar button:hover {
+    background-color: #218838;
+}
+
+/* Иконка добавления фото */
+.add-photo-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    transition: background-color 0.3s;
+}
+
+.add-photo-icon:hover {
+    background-color: #0056b3;
+}

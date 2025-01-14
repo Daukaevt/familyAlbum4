@@ -1,5 +1,12 @@
 package com.wixsite.mupbam1.models;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,11 +26,14 @@ public class Pics {
 	private String description;
 	private String url;
 	private String owner_key;
+	private int width;
+    private int height;
 	
 	public Pics(String description, String url, String owner_key) {
 		super();
 		this.description = description;
 		this.url = url;
-	}
+		
+	}	
 
 }

@@ -14,6 +14,7 @@ import static org.springframework.security.config.Customizer.*;
 public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.csrf().disable();
 		http.authorizeHttpRequests(auth->{
 			auth.requestMatchers("/album").permitAll();
 			auth.anyRequest().authenticated();

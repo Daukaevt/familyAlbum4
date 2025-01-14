@@ -1,5 +1,7 @@
 package com.wixsite.mupbam1.controllers;
 
+import java.util.Objects;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,10 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.wixsite.mupbam1.models.Pics;
 import com.wixsite.mupbam1.services.PhotoService;
 import com.wixsite.mupbam1.utils.HibernateUtil;
@@ -26,7 +25,7 @@ public class PhotoController {
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 	
-	@GetMapping("/index")
+	@GetMapping("/")
 	public String getIndex(Model model) {
 		model.addAttribute("photos", photoService.getAllPhotos());		
 		return "album/index";
@@ -35,44 +34,7 @@ public class PhotoController {
 	public String getAlbums() {
 		return "album/album";
 	}
-	@GetMapping("/test2-album")
-	public String getAlbumById(Authentication authentication, Model model) {
-		if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
-			String userId = photoService.getOwnerKey(oauth2User);
-		model.addAttribute("userId", userId);
-		model.addAttribute("photos", photoService.getAlbumByUserKey(userId));
-		}
-		return "album/test2_album";
-	}
-	/*
-	@GetMapping("/test2-album")
-	public String getTestAlbum(Authentication authentication, Model model) {
-		if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
-		model.addAttribute("userId", photoService.getOwnerKey(oauth2User));
-		model.addAttribute("photos", photoService.getAllPhotos());
-		}
-		return "test2_album";
-	}
-	*/
-	@PostMapping("/test2-album")
-    public String addPhoto(@RequestParam("description") String description,
-                           @RequestParam("url") String url,
-                           @RequestParam("ownerKey") String ownerKey,
-                           Model model) {
-        if (url == null || url.isEmpty()) {
-            model.addAttribute("error", "URL изображения обязателен.");
-            return "error"; // Вернуть страницу с ошибкой
-        }
 
-        Pics pic = new Pics();
-        pic.setDescription(description);
-        pic.setUrl(url);
-        pic.setOwner_key(ownerKey);
-
-        photoService.savePhoto(pic);
-        model.addAttribute("message", "Фото успешно добавлено!");
-        return "redirect:/"; // Перенаправление на главную страницу
-    }
 	@GetMapping("/all-together")
 	public String getAllTogether() {
 		return "album/all_together";
@@ -145,6 +107,13 @@ public class PhotoController {
 		}
         
         return "album/saved";
+	}
+	
+	@GetMapping("/test3")
+	public String getTest3(Model model) {
+		model.addAttribute("photos", photoService.getAllPhotos().stream().filter(Objects::nonNull).toList());
+		
+		return "album/test3";
 	}
 
 

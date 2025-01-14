@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script defer src="/js/script.js"></script>
+</head>
+<body>
+    <!-- Toolbar для добавления фото -->
+    <div class="toolbar" id="toolbar">
+        <form id="add-photo-form">
+            <input type="text" id="photo-url" placeholder="Enter photo URL" required>
+            <input type="text" id="photo-description" placeholder="Enter photo description" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <!-- Галерея фотографий -->
+ <div class="photo-grid">
+    <!-- Отображение фотографий -->
+    <div class="photo-tile" th:each="photo : ${photos}" >
+    <img th:src="${photo.url}" th:alt="${photo.description}" />
+</div>
+	
+
+    <!-- Шаблонные плитки, если фотографий не хватает -->
+    <div class="photo-tile placeholder" th:each="i : ${#numbers.sequence(photos.size() + 1, 3)}">
+        <div class="placeholder-content">+ Add Photo</div>
+    </div>
+</div>
+
+<!-- Модальное окно -->
+<div class="photo-modal" id="photo-modal">
+    <span class="close-modal" id="close-modal">&times;</span>
+    <img class="modal-content" id="modal-image" src="" alt="Photo">
+    <div id="photo-description-modal"></div>
+</div>
+<!-- Окно описания -->
+<div class="photo-description-window" id="photo-description-window">
+    <h2>Photo Description</h2>
+    <p id="photo-description-text"></p>
+</div>
+    <!-- Иконка для добавления фотографии -->
+    <div class="add-photo-icon" id="add-photo-icon">
+        <span>+</span>
+    </div>
+</body>
+</html>
