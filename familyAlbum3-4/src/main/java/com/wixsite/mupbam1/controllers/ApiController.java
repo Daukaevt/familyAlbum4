@@ -56,7 +56,7 @@ public class ApiController {
 		if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
         newPhoto.setDescription(description);
         newPhoto.setUrl(url);
-        newPhoto.setOwner_key(photoService.getOwnerKey(oauth2User));
+        newPhoto.setOwner_key(photoService.getOwner(oauth2User));
         photoService.savePhoto(newPhoto);
         System.out.println(newPhoto.toString());
         

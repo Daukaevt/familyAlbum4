@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Коллаж</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+h1 {
+	margin: 20px 0;
+}
+
+.gallery {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 15px;
+	margin: 20px;
+}
+
+.thumbnail {
+	width: 200px;
+	height: 250px;
+	object-fit: cover;
+	cursor: pointer;
+	border: 2px solid #ddd;
+	border-radius: 5px;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.thumbnail:hover {
+	transform: scale(1.05);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Модальное окно */
+.modal {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.8);
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.modal:target {
+	display: flex;
+}
+
+.modal-content {
+	max-width: 90%;
+	max-height: 90%;
+	border-radius: 5px;
+}
+
+.modal-description {
+	color: white;
+	font-size: 18px;
+	margin-top: 10px;
+}
+
+/* Кнопка закрытия */
+.close {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	font-size: 30px;
+	color: white;
+	text-decoration: none;
+	font-weight: bold;
+	z-index: 1001;
+}
+
+.close:hover {
+	color: red;
+}
+
+/* Кнопка "Добавить" */
+.add-button {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	background: #4CAF50;
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 70px;
+	height: 70px;
+	font-size: 40px;
+	font-family: Arial, sans-serif; /* Указываем стандартный шрифт */
+	font-weight: bold;
+	line-height: 70px; /* Выравниваем текст по вертикали */
+	text-align: center; /* Выравниваем текст по горизонтали */
+	text-decoration: none; /* Убираем подчёркивание */
+	cursor: pointer;
+	box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+	transition: all 0.3s ease;
+}
+
+.add-button:hover {
+	background: #2c632e;
+	box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+	transform: scale(1.1);
+}
+
+.add-button:active {
+	background: #9ffca3;
+	box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+	transform: scale(0.95);
+}
+
+/*
+        .add-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .add-button:hover {
+            background-color: #0056b3;
+        }
+        */
+
+/* Форма добавления */
+.add-form {
+	display: none;
+	position: fixed;
+	bottom: 100px;
+	right: 20px;
+	width: 300px;
+	background: white;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+}
+
+.add-form:target {
+	display: block;
+}
+
+.add-form input[type="text"], .add-form button {
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 10px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+}
+
+.add-form button {
+	background-color: #007bff;
+	color: white;
+	font-size: 16px;
+	cursor: pointer;
+	border: none;
+}
+
+.add-form button:hover {
+	background-color: #0056b3;
+}
+</style>
+</head>
+<body>
+	<!-- Отображение имени пользователя -->
+	<h1>
+		Коллаж пользователя <span th:text="${username}"></span>
+	</h1>
+
+	<!-- Галерея -->
+	<div class="gallery">
+		<!-- Перебираем список photos -->
+		<div th:each="photo, iterStat : ${photos}">
+			<!-- Миниатюра -->
+			<a th:href="'#modal-' + ${iterStat.index}"> <img
+				th:src="${photo.url}" th:alt="${photo.description}"
+				class="thumbnail">
+			</a>
+		</div>
+	</div>
+
+	<!-- Модальные окна -->
+	<div th:each="photo, iterStat : ${photos}"
+		th:id="'modal-' + ${iterStat.index}" class="modal">
+		<!-- Кнопка закрытия -->
+		<a href="#" class="close">&times;</a>
+		<!-- Увеличенное изображение -->
+		<img th:src="${photo.url}" th:alt="${photo.description}"
+			class="modal-content">
+		<!-- Описание изображения -->
+		<div class="modal-description" th:text="${photo.description}"></div>
+	</div>
+
+	<!-- Кнопка "Добавить" -->
+	<a href="#addForm" class="add-button">+</a> Форма добавления
+	<div id="addForm" class="add-form">
+		<form th:action="@{/album/img4}" th:method="POST" th:object="${pic}">
+			<input type="text" th:field="*{url}" placeholder="URL изображения">
+			<input type="text" th:field="*{description}"
+				placeholder="Описание изображения">
+			<button type="submit">Добавить</button>
+		</form>
+		<a href="#" class="close">&times;</a>
+	</div>
+
+</body>
+</html>

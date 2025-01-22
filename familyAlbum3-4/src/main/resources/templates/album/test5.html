@@ -1,0 +1,136 @@
+<!-- 
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/css/style5.css">
+<script defer src="/js/script5.js"></script>
+</head>
+<body>
+	<!-- Toolbar для добавления фото 
+    <div class="toolbar" id="toolbar">
+        <form id="add-photo-form">
+            <input type="text" id="photo-url" placeholder="Enter photo URL" required>
+            <input type="text" id="photo-description" placeholder="Enter photo description" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    
+    <!-- Иконка для добавления фотографии 
+    <div class="add-photo-icon" id="add-photo-icon">
+        <span>+</span>
+    </div>
+</body>
+</html>
+ -->
+ 
+ <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .photo-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .photo-card .description {
+            padding: 10px;
+        }
+
+        .add-photo-form {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-photo-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .add-photo-form input, .add-photo-form textarea, .add-photo-form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .add-photo-form button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-photo-form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Photo Gallery</h1>
+
+        <!-- Photo Gallery -->
+        <div class="gallery">
+            <div th:each="photo : ${photos}" class="photo-card">
+                <img th:src="${photo.url}" th:alt="${photo.description}">
+                <div class="description">
+                    <p th:text="${photo.description}"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add New Photo Form -->
+        <form th:action="@{/album/test5}" th:object="${newPhoto}" method="post" class="add-photo-form">
+            <h2>Add New Photo</h2>
+            <label for="url">Photo URL:</label>
+            <input type="text" id="url" th:field="*{url}" placeholder="Enter photo URL" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" th:field="*{description}" placeholder="Enter photo description" required></textarea>
+
+            <button type="submit">Add Photo</button>
+        </form>
+    </div>
+</body>
+</html>
+ 

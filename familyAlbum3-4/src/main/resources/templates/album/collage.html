@@ -1,0 +1,304 @@
+<!-- 
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Photo Collage</title>
+    <link rel="stylesheet" type="text/css" href="/css/collage.css">
+</head>
+<body>
+    <h1>Photo Collage for <span th:text="${username}"></span></h1>
+    <div class="collage">
+        <div class="photo" th:each="photo : ${photos}" th:style="'background-image: url(' + ${photo.url} + ')'" onclick="toggleFullPhoto(this)"></div>
+    </div>
+    <div id="full-photo" class="full-photo" onclick="toggleFullPhoto()"></div>
+    <div class="circle" style="width: 100px; height: 100px; background-color: rgba(255, 0, 0, 0.5); animation: circleAnimation 5s infinite alternate;"></div>
+    <div class="circle" style="width: 150px; height: 150px; background-color: rgba(0, 0, 255, 0.5); animation: circleAnimation 7s infinite alternate;"></div>
+    
+    <!-- Add Photo Button 
+    <button id="add-photo-btn" class="add-photo-btn" onclick="toggleToolbar()">+</button>
+    
+    <!-- Toolbar for adding photo 
+    <div id="toolbar" class="toolbar">
+        <form th:action="@{/album/add-photo}" method="post">
+            <input type="text" name="url" placeholder="Photo URL" required>
+            <input type="text" name="description" placeholder="Description">
+            <button type="submit">Add Photo</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleFullPhoto(element) {
+            var fullPhoto = document.getElementById("full-photo");
+            if (fullPhoto.style.display === "block") {
+                fullPhoto.style.display = "none";
+            } else {
+                fullPhoto.style.backgroundImage = element.style.backgroundImage;
+                fullPhoto.style.display = "block";
+            }
+        }
+
+        function toggleToolbar() {
+            var toolbar = document.getElementById("toolbar");
+            if (toolbar.style.display === "block") {
+                toolbar.style.display = "none";
+            } else {
+                toolbar.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
+
+ 
+ 
+ <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Photo Collage</title>
+    <link rel="stylesheet" type="text/css" href="/css/collage.css">
+</head>
+<body>
+    <h1>Photo Collage for <span th:text="${username}"></span></h1>
+    <div class="collage">
+        <div class="photo" th:each="photo : ${photos}" th:style="'background-image: url(' + ${photo.url} + ')'" onclick="toggleFullPhoto(this, '${photo.url}', '${photo.description}')"></div>
+    </div>
+    <div id="full-photo" class="full-photo" onclick="toggleFullPhoto()">
+        <div class="photo-actions">
+            <button id="edit-photo-btn" class="photo-btn" onclick="openEditToolbar(event)">✎</button>
+            <button id="delete-photo-btn" class="photo-btn" onclick="deletePhoto(event)">✖</button>
+        </div>
+    </div>
+    <div id="edit-toolbar" class="edit-toolbar">
+        <form th:action="@{/album/edit-photo}" method="post">
+            <input type="hidden" name="originalUrl" id="original-url">
+            <input type="text" name="url" id="edit-url" placeholder="Photo URL" required>
+            <input type="text" name="description" id="edit-description" placeholder="Description">
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+    <div class="circle" style="width: 100px; height: 100px; background-color: rgba(255, 0, 0, 0.5); animation: circleAnimation 5s infinite alternate;"></div>
+    <div class="circle" style="width: 150px; height: 150px; background-color: rgba(0, 0, 255, 0.5); animation: circleAnimation 7s infinite alternate;"></div>
+    <button id="add-photo-btn" class="add-photo-btn" onclick="toggleToolbar()">+</button>
+    <div id="toolbar" class="toolbar">
+        <form th:action="@{/album/add-photo}" method="post">
+            <input type="text" name="url" placeholder="Photo URL" required>
+            <input type="text" name="description" placeholder="Description">
+            <button type="submit">Add Photo</button>
+        </form>
+    </div>
+
+ <script>
+        function toggleFullPhoto(element, url, description) {
+            var fullPhoto = document.getElementById("full-photo");
+            if (fullPhoto.style.display === "block") {
+                fullPhoto.style.display = "none";
+            } else {
+                fullPhoto.style.backgroundImage = element.style.backgroundImage;
+                fullPhoto.style.display = "block";
+                document.getElementById("original-url").value = url;
+                document.getElementById("edit-url").value = url;
+                document.getElementById("edit-description").value = description;
+            }
+        }
+
+        function toggleToolbar() {
+            var toolbar = document.getElementById("toolbar");
+            if (toolbar.style.display === "block") {
+                toolbar.style.display = "none";
+            } else {
+                toolbar.style.display = "block";
+            }
+        }
+
+        function openEditToolbar(event) {
+            event.stopPropagation();
+            var editToolbar = document.getElementById("edit-toolbar");
+            var fullPhoto = document.getElementById("full-photo");
+            fullPhoto.style.display = "none"; // Close the full photo display
+            if (editToolbar.style.display === "block") {
+                editToolbar.style.display = "none";
+            } else {
+                editToolbar.style.display = "block";
+            }
+        }
+
+        function deletePhoto(event) {
+            event.stopPropagation();
+            var originalUrl = document.getElementById("original-url").value;
+            window.location.href = '/album/delete-photo?url=' + encodeURIComponent(originalUrl);
+        }
+    </script>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Photo Collage</title>
+    <link rel="stylesheet" type="text/css" href="/css/collage.css">
+</head>
+<body>
+    <h1>Photo Collage for <span th:text="${username}"></span></h1>
+    <div class="collage">
+        <div class="photo" th:each="photo : ${photos}" th:style="'background-image: url(' + ${photo.url} + ')'" onclick="toggleFullPhoto(this, '${photo.id}', '${photo.url}', '${photo.description}')"></div>
+    </div>
+    <div id="full-photo" class="full-photo">
+        <div class="photo-actions">
+            <button id="edit-photo-btn" class="photo-btn" onclick="openEditToolbar(event, '${photo.id}', '${photo.url}', '${photo.description}')">✎</button>
+            <button id="delete-photo-btn" class="photo-btn" onclick="deletePhoto(event, '${photo.id}')">✖</button>
+        </div>
+    </div>
+    <div id="edit-toolbar" class="edit-toolbar">
+        <form th:action="@{/edit-photo}" method="post">
+            <input type="hidden" name="id" id="edit-id">
+            <input type="text" name="url" id="edit-url" placeholder="Photo URL" required>
+            <input type="text" name="description" id="edit-description" placeholder="Description">
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+    <div class="circle" style="width: 100px; height: 100px; background-color: rgba(255, 0, 0, 0.5); animation: circleAnimation 5s infinite alternate;"></div>
+    <div class="circle" style="width: 150px; height: 150px; background-color: rgba(0, 0, 255, 0.5); animation: circleAnimation 7s infinite alternate;"></div>
+    <button id="add-photo-btn" class="add-photo-btn" onclick="toggleToolbar()">+</button>
+    <div id="toolbar" class="toolbar">
+        <form th:action="@{/add-photo}" method="post">
+            <input type="text" name="url" placeholder="Photo URL" required>
+            <input type="text" name="description" placeholder="Description">
+            <button type="submit">Add Photo</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleFullPhoto(element, id, url, description) {
+            var fullPhoto = document.getElementById("full-photo");
+            if (fullPhoto.style.display === "block") {
+                fullPhoto.style.display = "none";
+            } else {
+                fullPhoto.style.backgroundImage = element.style.backgroundImage;
+                fullPhoto.style.display = "block";
+                document.getElementById("edit-id").value = id;
+                document.getElementById("edit-url").value = url;
+                document.getElementById("edit-description").value = description;
+            }
+        }
+
+        function toggleToolbar() {
+            var toolbar = document.getElementById("toolbar");
+            if (toolbar.style.display === "block") {
+                toolbar.style.display = "none";
+            } else {
+                toolbar.style.display = "block";
+            }
+        }
+
+        function openEditToolbar(event, id, url, description) {
+            event.stopPropagation();
+            var editToolbar = document.getElementById("edit-toolbar");
+            var fullPhoto = document.getElementById("full-photo");
+            fullPhoto.style.display = "none"; // Close the full photo display
+            document.getElementById("edit-id").value = id;
+            document.getElementById("edit-url").value = url;
+            document.getElementById("edit-description").value = description;
+            if (editToolbar.style.display === "block") {
+                editToolbar.style.display = "none";
+            } else {
+                editToolbar.style.display = "block";
+            }
+        }
+
+        function deletePhoto(event, id) {
+            event.stopPropagation();
+            window.location.href = '/album/delete-photo?id=' + encodeURIComponent(id);
+        }
+    </script>
+</body>
+</html>
+-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Photo Collage</title>
+    <link rel="stylesheet" type="text/css" href="/css/collage.css">
+</head>
+<body>
+    <h1>Photo Collage for <span th:text="${username}"></span></h1>
+    <div class="collage">
+        <div class="photo" th:each="photo : ${photos}" th:style="'background-image: url(' + ${photo.url} + ')'" onclick="toggleFullPhoto(this, '${photo.id}', '${photo.url}', '${photo.description}')"></div>
+    </div>
+    <div id="full-photo" class="full-photo">
+        <div class="photo-actions">
+            <button id="edit-photo-btn" class="photo-btn" onclick="openEditToolbar(event, '${photo.id}', '${photo.url}', '${photo.description}')">✎</button>
+            <button id="delete-photo-btn" class="photo-btn" onclick="deletePhoto(event, '${photo.id}')">✖</button>
+        </div>
+
+		<form th:action="@{/album/delete-photo}" th:method="DELETE" th:object=${photo}>
+			<input type="submit" value="Delete" />
+		</form>
+	</div>
+  
+    
+    <div id="edit-toolbar" class="edit-toolbar">
+        <form th:action="@{/edit-photo}" method="post">
+            <input type="hidden" name="id" id="edit-id">
+            <input type="text" name="url" id="edit-url" placeholder="Photo URL" required>
+            <input type="text" name="description" id="edit-description" placeholder="Description">
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+    <div class="circle" style="width: 100px; height: 100px; background-color: rgba(255, 0, 0, 0.5); animation: circleAnimation 5s infinite alternate;"></div>
+    <div class="circle" style="width: 150px; height: 150px; background-color: rgba(0, 0, 255, 0.5); animation: circleAnimation 7s infinite alternate;"></div>
+    <button id="add-photo-btn" class="add-photo-btn" onclick="toggleToolbar()">+</button>
+    <div id="toolbar" class="toolbar">
+        <form th:action="@{/add-photo}" method="post">
+            <input type="text" name="url" placeholder="Photo URL" required>
+            <input type="text" name="description" placeholder="Description">
+            <button type="submit">Add Photo</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleFullPhoto(element, id, url, description) {
+            var fullPhoto = document.getElementById("full-photo");
+            if (fullPhoto.style.display === "block") {
+                fullPhoto.style.display = "none";
+            } else {
+                fullPhoto.style.backgroundImage = element.style.backgroundImage;
+                fullPhoto.style.display = "block";
+                document.getElementById("edit-id").value = id;
+                document.getElementById("edit-url").value = url;
+                document.getElementById("edit-description").value = description;
+            }
+        }
+
+        function toggleToolbar() {
+            var toolbar = document.getElementById("toolbar");
+            if (toolbar.style.display === "block") {
+                toolbar.style.display = "none";
+            } else {
+                toolbar.style.display = "block";
+            }
+        }
+
+        function openEditToolbar(event, id, url, description) {
+            event.stopPropagation();
+            var editToolbar = document.getElementById("edit-toolbar");
+            var fullPhoto = document.getElementById("full-photo");
+            fullPhoto.style.display = "none"; // Close the full photo display
+            document.getElementById("edit-id").value = id;
+            document.getElementById("edit-url").value = url;
+            document.getElementById("edit-description").value = description;
+            if (editToolbar.style.display === "block") {
+                editToolbar.style.display = "none";
+            } else {
+                editToolbar.style.display = "block";
+            }
+        }
+
+        function deletePhoto(event, id) {
+            event.stopPropagation();
+            window.location.href = '/album/delete-photo?id=' + encodeURIComponent(id);
+        }
+    </script>
+</body>
+</html>

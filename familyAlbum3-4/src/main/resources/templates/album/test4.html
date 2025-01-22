@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Photo Collage</title>
+    <style>
+        /* Фон с кругами и градиентом */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle, yellow, lightgreen, green, lightbrown);
+            overflow-x: hidden;
+            animation: gradient-move 10s infinite alternate;
+        }
+
+        @keyframes gradient-move {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            animation: float 10s infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Контейнер фотоколлажа */
+        .collage {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .tile {
+            position: relative;
+            flex: 1 1 calc(16.66% - 10px);
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+        }
+
+        .tile.large {
+            flex: 2 2 calc(33.33% - 10px);
+        }
+
+        .tile .description {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        /* Иконка добавления записи */
+        .add-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: yellowgreen;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Тулбар для добавления записи */
+        .toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toolbar input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .toolbar button {
+            padding: 10px;
+            background: yellowgreen;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Полноэкранное изображение */
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .fullscreen img {
+            max-width: 90%;
+            max-height: 90%;
+            border: 5px solid white;
+            border-radius: 10px;
+        }
+
+        .fullscreen .edit-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: yellowgreen;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Тулбар для редактирования записи */
+        .edit-toolbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Фотоколлаж -->
+    <div class="collage">
+        <div th:each="photo : ${photos}" class="tile" 
+             th:style="|background-image: url('${photo.url}');|">
+            <div class="description" th:text="${photo.description}"></div>
+        </div>
+    </div>
+
+    <!-- Иконка добавления записи -->
+    <div class="add-icon" onclick="toggleToolbar('add')">+</div>
+
+    <!-- Тулбар добавления записи -->
+    <div class="toolbar" id="add-toolbar">
+        <input type="text" placeholder="Описание" id="add-description">
+        <input type="url" placeholder="URL изображения" id="add-url">
+        <button onclick="submitAdd()">Добавить</button>
+    </div>
+
+    <!-- Полноэкранное изображение -->
+    <div class="fullscreen" id="fullscreen">
+        <img src="" alt="Полноэкранное изображение">
+        <div class="edit-icon" onclick="toggleToolbar('edit')">✎</div>
+    </div>
+
+    <!-- Тулбар редактирования записи -->
+    <div class="edit-toolbar" id="edit-toolbar">
+        <input type="text" placeholder="Описание" id="edit-description">
+        <input type="url" placeholder="URL изображения" id="edit-url">
+        <button onclick="submitEdit()">Сохранить</button>
+        <button onclick="deleteImage()">Удалить</button>
+    </div>
+
+    <script>
+        // Логика открытия/закрытия тулбаров
+        function toggleToolbar(type) {
+            const toolbar = type === 'add' ? document.getElementById('add-toolbar') : document.getElementById('edit-toolbar');
+            toolbar.style.display = toolbar.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // Логика добавления записи
+        function submitAdd() {
+            const description = document.getElementById('add-description').value;
+            const url = document.getElementById('add-url').value;
+            // Здесь добавьте логику для отправки данных на сервер
+            alert(`Добавлено: ${description}, ${url}`);
+            toggleToolbar('add');
+        }
+
+        // Логика редактирования записи
+        function submitEdit() {
+            const description = document.getElementById('edit-description').value;
+            const url = document.getElementById('edit-url').value;
+            // Здесь добавьте логику для отправки данных на сервер
+            alert(`Изменено: ${description}, ${url}`);
+            toggleToolbar('edit');
+        }
+
+        // Логика удаления изображения
+        function deleteImage() {
+            // Здесь добавьте логику удаления записи
+            alert('Удалено');
+            toggleToolbar('edit');
+        }
+
+        // Логика отображения полноэкранного изображения
+        document.querySelectorAll('.tile').forEach(tile => {
+            tile.addEventListener('click', () => {
+                const fullscreen = document.getElementById('fullscreen');
+                const img = fullscreen.querySelector('img');
+                img.src = tile.style.backgroundImage.slice(5, -2);
+                fullscreen.style.display = 'flex';
+            });
+        });
+
+        // Закрытие полноэкранного изображения
+        document.getElementById('fullscreen').addEventListener('click', (e) => {
+            if (e.target.tagName !== 'IMG') {
+                document.getElementById('fullscreen').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

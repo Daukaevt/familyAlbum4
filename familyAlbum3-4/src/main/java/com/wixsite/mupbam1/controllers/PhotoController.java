@@ -10,8 +10,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.wixsite.mupbam1.models.Pics;
 import com.wixsite.mupbam1.services.PhotoService;
 import com.wixsite.mupbam1.utils.HibernateUtil;
@@ -24,6 +30,7 @@ public class PhotoController {
 	//private OAuth2UserUtil oauth2User;
 	
 	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+	private Pics pic;
 	
 	@GetMapping("/")
 	public String getIndex(Model model) {
@@ -35,10 +42,34 @@ public class PhotoController {
 		return "album/album";
 	}
 
-	@GetMapping("/all-together")
-	public String getAllTogether() {
-		return "album/all_together";
+	@GetMapping("/img4")
+	public String getAllTogether(Model model, Authentication authentication) {
+		model.addAttribute("photos", photoService.getAllPhotos());
+		String username = authentication.getPrincipal() instanceof OAuth2User oauth2User
+				? photoService.getOwner(oauth2User)
+						: "unknown_user";
+		model.addAttribute("username", username);
+		model.addAttribute("pic", new Pics());
+		
+		return "album/img4";
 	}
+    @PostMapping("/img4")
+    public String addPhoto(
+    		/*@RequestParam String url, @RequestParam String description, */ 
+    		Authentication authentication, @ModelAttribute("pic") Pics pic) {
+        //pic.add(new Pics(url, description));
+    	String owner = authentication.getPrincipal() instanceof OAuth2User oauth2User
+				? photoService.getOwner(oauth2User)
+						: "unknown_user";
+    	System.out.println("********************" + pic.getDescription());
+    	pic.setDescription(pic.getDescription());
+    	pic.setUrl(pic.getUrl());
+    	pic.setOwner_key(owner);
+    	
+    	photoService.savePhoto(pic);
+    	
+        return "redirect:/album"; // перенаправление на главную страницу
+    }
 	@GetMapping("/all-together1")
 	public String getAllTogether1() {
 		return "album/all_together1";
@@ -89,7 +120,7 @@ public class PhotoController {
 		if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
         newPhoto.setDescription("в лесу.");
         newPhoto.setUrl("https://iili.io/2WzifmG.jpg");
-        newPhoto.setOwner_key(photoService.getOwnerKey(oauth2User));
+        newPhoto.setOwner_key(photoService.getOwner(oauth2User));
         
         try {
         	Pics pic = photoService.getPhotoById(10000001L);
@@ -112,9 +143,69 @@ public class PhotoController {
 	@GetMapping("/test3")
 	public String getTest3(Model model) {
 		model.addAttribute("photos", photoService.getAllPhotos().stream().filter(Objects::nonNull).toList());
-		
+		model.addAttribute("newPhoto", new Pics());
 		return "album/test3";
 	}
-
+	@GetMapping("/test4")
+	public String getTest4(Model model) {
+		model.addAttribute("photos", photoService.getAllPhotos().stream().filter(Objects::nonNull).toList());
+		model.addAttribute("newPhoto", new Pics());
+		return "album/test4";
+	}
+	/*
+	@ModelAttribute("principal")
+	public String populatePrincipalName(Authentication authentication) {
+		return (authentication.getPrincipal() instanceof OAuth2User oauth2User)
+				? photoService.getOwner(oauth2User) :"unknown_owner";
+	}
+	*/
+	@GetMapping("/test7")
+	public String getTest5(Model model) {
+		model.addAttribute("photos", photoService.getAllPhotos().stream().filter(Objects::nonNull).toList());
+		model.addAttribute("newPhoto", new Pics());
+		return "album/test7";
+	}
+	@GetMapping("/collage")
+	public String getCollage(Model model, Authentication authentication) {
+		/*
+		model.addAttribute("photos",
+				photoService.getAlbumByUserKey((authentication.getPrincipal() instanceof OAuth2User oauth2User)
+						? photoService.getOwner(oauth2User)
+								:"unknown_owner")
+				);
+				*/
+		model.addAttribute("photos", photoService.getAllPhotos());
+		String username = authentication.getPrincipal() instanceof OAuth2User oauth2User
+				? photoService.getOwner(oauth2User)
+						: "unknown_user";
+		model.addAttribute("username", username);
+		return "album/collage";
+	}
+	//@PostMapping("/add-photo")
+	public String createNewPhoto(@ModelAttribute("newPhoto") Pics newPhoto, Authentication authentication) {
+		String owner = authentication.getPrincipal() instanceof OAuth2User oauth2User
+				? photoService.getOwner(oauth2User)
+						: "unknown_user";
+		newPhoto.setOwner_key(owner);
+		photoService.savePhoto(newPhoto);
+		return "redirect:/album/collage";
+	}
+    @PostMapping("/edit-photo")
+    public String editPhoto(@RequestParam("originalUrl") String originalUrl, @RequestParam("url") String url, @RequestParam("description") String description) {
+    	System.out.println("EEEEEEEEEEEEDDDDDIIIIIIIIIITTTTTTTTTTEEEEEDDDDDDDDD!");
+        return "redirect:/album/collage";
+    }
+	 @DeleteMapping("/delete-photo")
+	    public String deletePhoto(@PathVariable("id") Long id) {
+		 System.out.println("DDDDDEEEEEEELLLLLLLLLLLEEEEETTTTTTTTTTEEEEEDDDDDDDDD!" + id);
+		 // photoService.deleteUser(id);
+	     /*   
+		 photos = photos.stream()
+	                .filter(photo -> !photo.getUrl().equals(url))
+	                .collect(Collectors.toList());
+	                */
+	        return "redirect:/album/collage";
+	    }
+	
 
 }

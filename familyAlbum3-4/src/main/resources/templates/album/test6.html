@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, #a8e6cf, #dcedc1, #ffd3b6, #ffaaa5);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .photo-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .photo-card .description {
+            padding: 10px;
+        }
+
+        .photo-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .photo-modal.active {
+            display: flex;
+        }
+
+        .modal-image {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .add-photo-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #007BFF, #00D4FF);
+            color: white;
+            text-decoration: none;
+            border-radius: 50%;
+            font-size: 32px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .add-photo-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #add-photo-toggle:checked + .form-overlay {
+            display: flex;
+        }
+
+        .add-photo-form {
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .add-photo-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .add-photo-form input, .add-photo-form textarea, .add-photo-form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .add-photo-form button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-photo-form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Photo Gallery</h1>
+
+        <!-- Photo Gallery -->
+        <div class="gallery">
+            <div th:each="photo : ${photos}" class="photo-card" onclick="openPhotoModal(this.querySelector('img').src)">
+                <img th:src="${photo.url}" th:alt="${photo.description}">
+                <div class="description">
+                    <p th:text="${photo.description}"></p>
+                </div>
+            </div>
+        </div>
+        <!-- Form Overlay -->
+        <div class="form-overlay" onclick="document.getElementById('add-photo-toggle').checked = false;">
+            <form th:action="@{/album/test6}" th:object="${newPhoto}" method="post" class="add-photo-form" onclick="event.stopPropagation();">
+                <label for="photo-url">Photo URL:</label>
+                <input type="text" id="photo-url" th:field="*{url}" placeholder="Enter photo URL" required>
+
+                <label for="photo-description">Description:</label>
+                <textarea id="photo-description" th:field="*{description}" placeholder="Enter description" required></textarea>
+
+                <button type="submit">Add Photo</button>
+            </form>
+        </div>
+
+        <!-- Photo Modal -->
+        <div id="photo-modal" class="photo-modal" onclick="closePhotoModal()">
+            <img id="modal-image" class="modal-image" src="" alt="Enlarged Photo">
+        </div>
+
+        <!-- Add Photo Button -->
+        <label for="add-photo-toggle" class="add-photo-button">+</label>
+
+        <!-- Hidden Form Toggle -->
+        <input type="checkbox" id="add-photo-toggle" style="display: none;">
+
+        <!-- Form Overlay -->
+        <div class="form-overlay" onclick="document.getElementById('add-photo-toggle').checked = false;">

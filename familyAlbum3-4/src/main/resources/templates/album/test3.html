@@ -17,21 +17,22 @@
         </form>
     </div>
 
-    <!-- Галерея фотографий -->
- <div class="photo-grid">
-    <!-- Отображение фотографий -->
-    <div class="photo-tile" th:each="photo : ${photos}" >
-    <img th:src="${photo.url}" th:alt="${photo.description}" />
-</div>
-	
+	<!-- Галерея фотографий -->
+	<div class="photo-grid">
+		<!-- Отображение фотографий -->
+		<div class="photo-tile" th:each="photo : ${photos}">
+			<img th:src="${photo.url}" th:alt="${photo.description}" />
+		</div>
 
-    <!-- Шаблонные плитки, если фотографий не хватает -->
-    <div class="photo-tile placeholder" th:each="i : ${#numbers.sequence(photos.size() + 1, 3)}">
-        <div class="placeholder-content">+ Add Photo</div>
-    </div>
-</div>
 
-<!-- Модальное окно -->
+		<!-- Шаблонные плитки, если фотографий не хватает -->
+		<div class="photo-tile placeholder"
+			th:each="i : ${#numbers.sequence(photos.size() + 1, 3)}">
+			<div class="placeholder-content">+ Add Photo</div>
+		</div>
+	</div>
+
+	<!-- Модальное окно -->
 <div class="photo-modal" id="photo-modal">
     <span class="close-modal" id="close-modal">&times;</span>
     <img class="modal-content" id="modal-image" src="" alt="Photo">

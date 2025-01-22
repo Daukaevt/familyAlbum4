@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изображение в модальном окне</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Уменьшенная картинка */
+        .thumbnail {
+            width: 300px;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.05);
+        }
+
+        /* Фон модального окна */
+        .modal {
+            display: none; /* Скрываем по умолчанию */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Тёмный прозрачный фон */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Показываем модальное окно, если оно активно */
+        .modal:target {
+            display: flex;
+        }
+
+        /* Содержимое модального окна */
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        /* Кнопка закрытия */
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            z-index: 1001;
+        }
+
+        .close:hover {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <!-- Уменьшенная картинка -->
+    <a href="#modal1">
+        <img src="https://iili.io/2MqE8Is.png" alt="Картинка 1" class="thumbnail">
+    </a>
+
+    <!-- Модальное окно -->
+    <div id="modal1" class="modal">
+        <!-- Кнопка закрытия -->
+        <a href="#" class="close">&times;</a>
+        <!-- Полное изображение -->
+        <img src="https://iili.io/2MqE8Is.png" alt="Полная картинка" class="modal-content">
+    </div>
+</body>
+</html>
